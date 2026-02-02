@@ -4,118 +4,81 @@ import { EventCard } from './EventCard';
 import { Timeline } from './Timeline';
 import { GameOver } from './GameOver';
 import { Victory } from './Victory';
-
-export interface HistoricalEvent {
-  id: number;
-  title: string;
-  year: number;
-  description: string;
-}
-
-// Historical events database
-const allEvents: HistoricalEvent[] = [
-  { id: 1, title: "First Moon Landing", year: 1969, description: "Apollo 11 mission successfully lands on the Moon" },
-  { id: 2, title: "Fall of Berlin Wall", year: 1989, description: "The Berlin Wall falls, marking the end of the Cold War era" },
-  { id: 3, title: "World Wide Web Invented", year: 1989, description: "Tim Berners-Lee invents the World Wide Web" },
-  { id: 4, title: "First iPhone Released", year: 2007, description: "Apple releases the first iPhone, revolutionizing smartphones" },
-  { id: 5, title: "End of World War II", year: 1945, description: "World War II ends with Japan's surrender" },
-  { id: 6, title: "Titanic Sinks", year: 1912, description: "RMS Titanic sinks on its maiden voyage" },
-  { id: 7, title: "Wright Brothers First Flight", year: 1903, description: "First successful powered airplane flight" },
-  { id: 8, title: "Discovery of Penicillin", year: 1928, description: "Alexander Fleming discovers penicillin" },
-  { id: 9, title: "First Human in Space", year: 1961, description: "Yuri Gagarin becomes the first human in space" },
-  { id: 10, title: "Stock Market Crash", year: 1929, description: "Wall Street Crash leads to the Great Depression" },
-  { id: 11, title: "First TV Broadcast", year: 1927, description: "First long-distance television broadcast" },
-  { id: 12, title: "Facebook Founded", year: 2004, description: "Mark Zuckerberg launches Facebook" },
-  { id: 13, title: "Einstein's Theory of Relativity", year: 1915, description: "Einstein publishes General Theory of Relativity" },
-  { id: 14, title: "Netflix Founded", year: 1997, description: "Netflix launches as a DVD rental service" },
-  { id: 15, title: "Google Founded", year: 1998, description: "Larry Page and Sergey Brin found Google" },
-];
+import { Match, Occurrence } from '../types/game';
+import { createMatch, playCard } from '../services/game';
 
 export default function TimelineGame() {
-  const [lives, setLives] = useState(3);
-  const [timeline, setTimeline] = useState<HistoricalEvent[]>([]);
-  const [remainingEvents, setRemainingEvents] = useState<HistoricalEvent[]>([]);
-  const [currentCard, setCurrentCard] = useState<HistoricalEvent | null>(null);
-  const [gameState, setGameState] = useState<'playing' | 'victory' | 'gameover'>('playing');
+  const [match, setMatch] = useState<Match | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Initialize game
   useEffect(() => {
     startNewGame();
   }, []);
 
-  const startNewGame = () => {
-    // Shuffle events
-    const shuffled = [...allEvents].sort(() => Math.random() - 0.5);
-    
-    // Take first event for timeline
-    const firstEvent = shuffled[0];
-    setTimeline([firstEvent]);
-    
-    // Set remaining events
-    const remaining = shuffled.slice(1);
-    setRemainingEvents(remaining);
-    
-    // Set current card
-    setCurrentCard(remaining[0]);
-    
-    // Reset game state
-    setLives(3);
-    setGameState('playing');
-    setIsCorrect(null);
-  };
-
-  const handlePlacement = (position: number) => {
-    if (!currentCard || isCorrect !== null) return;
-
-    // Create new timeline with card inserted
-    const newTimeline = [...timeline];
-    newTimeline.splice(position, 0, currentCard);
-
-    // Check if placement is correct
-    const isCorrectPlacement = newTimeline.every((event, idx) => {
-      if (idx === 0) return true;
-      return event.year >= newTimeline[idx - 1].year;
-    });
-
-    if (isCorrectPlacement) {
-      // Correct placement
-      setIsCorrect(true);
-      setTimeline(newTimeline);
-
-      setTimeout(() => {
-        const newRemaining = remainingEvents.slice(1);
-        setRemainingEvents(newRemaining);
-
-        if (newRemaining.length === 0) {
-          // Victory!
-          setGameState('victory');
-        } else {
-          setCurrentCard(newRemaining[0]);
-          setIsCorrect(null);
-        }
-      }, 1000);
-    } else {
-      // Wrong placement
-      setIsCorrect(false);
-      const newLives = lives - 1;
-      setLives(newLives);
-
-      setTimeout(() => {
-        if (newLives === 0) {
-          setGameState('gameover');
-        }
-        setIsCorrect(null);
-      }, 1000);
+  const startNewGame = async () => {
+    setLoading(true);
+    try {
+      const initialMatch = await createMatch();
+      setMatch(initialMatch);
+      setIsCorrect(null);
+    } catch (error) {
+      console.error('Failed to start new game:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (gameState === 'victory') {
-    return <Victory onRestart={startNewGame} score={timeline.length} />;
+  const handlePlacement = async (position: number) => {
+    if (!match || isCorrect !== null || loading) return;
+
+    const currentCard = match.player_hand[0];
+    if (!currentCard) return;
+
+    setLoading(true);
+    try {
+      const response = await playCard(match.id, currentCard.id, position);
+      setIsCorrect(response.status === 'correct');
+      setMatch(response.match);
+
+      // Delay for visual feedback before clearing isCorrect
+      setTimeout(() => {
+        setIsCorrect(null);
+      }, 1000);
+
+    } catch (error) {
+      console.error('Failed to play card:', error);
+      // Handle error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!match && loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <p className="text-2xl font-semibold text-gray-700">Loading game...</p>
+      </div>
+    );
   }
 
-  if (gameState === 'gameover') {
-    return <GameOver onRestart={startNewGame} score={timeline.length} />;
+  if (!match) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <p className="text-2xl font-semibold text-red-500">Error: Game not loaded.</p>
+      </div>
+    );
+  }
+
+  const currentCard = match.player_hand.length > 0 ? match.player_hand[0] : null;
+
+  if (match.status === 'win') {
+    return <Victory onRestart={startNewGame} score={match.timeline.length} />;
+  }
+
+  if (match.status === 'lose') {
+    return <GameOver onRestart={startNewGame} score={match.timeline.length} />;
   }
 
   return (
@@ -132,14 +95,14 @@ export default function TimelineGame() {
             {/* Lives */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md">
               <Heart className="w-5 h-5 text-red-500" fill="currentColor" />
-              <span className="font-semibold text-gray-700">Lives: {lives}</span>
+              <span className="font-semibold text-gray-700">Lives: {match.remaining_life}</span>
             </div>
 
             {/* Remaining Cards */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md">
               <Trophy className="w-5 h-5 text-yellow-500" />
               <span className="font-semibold text-gray-700">
-                Remaining: {remainingEvents.length}
+                Remaining: {match.remaining_deck}
               </span>
             </div>
           </div>
@@ -161,9 +124,9 @@ export default function TimelineGame() {
 
         {/* Timeline */}
         <Timeline 
-          events={timeline} 
+          events={match.timeline} 
           onPlacement={handlePlacement} 
-          disabled={isCorrect !== null}
+          disabled={isCorrect !== null || loading}
         />
       </div>
     </div>

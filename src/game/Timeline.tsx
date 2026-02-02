@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
-import { HistoricalEvent } from './TimelineGame';
+import { Occurrence } from '../types/game';
 import { CalendarDays } from 'lucide-react';
 
 interface TimelineProps {
-  events: HistoricalEvent[];
+  events: Occurrence[];
   onPlacement: (position: number) => void;
   disabled: boolean;
 }
@@ -37,7 +37,7 @@ export function Timeline({ events, onPlacement, disabled }: TimelineProps) {
                   <CalendarDays className="w-5 h-5" />
                   <div>
                     <h4 className="font-semibold">{event.title}</h4>
-                    <p className="text-sm opacity-90">{event.description}</p>
+                    <p className="text-sm opacity-90">{event.summary}</p>
                   </div>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-bold text-lg">

@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
-import { HistoricalEvent } from './TimelineGame';
+import { Occurrence } from '../types/game';
 import { Check, X } from 'lucide-react';
 
 interface EventCardProps {
-  event: HistoricalEvent;
+  event: Occurrence;
   isCorrect: boolean | null;
   revealed?: boolean;
 }
@@ -50,13 +50,13 @@ export function EventCard({ event, isCorrect, revealed = false }: EventCardProps
 
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">{event.title}</h3>
-          <p className="text-gray-600 mb-4">{event.description}</p>
-          {revealed && (
+          <p className="text-gray-600 mb-4">{event.summary}</p>
+          {revealed && event.year !== null && (
             <div className="inline-block bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold">
               {event.year}
             </div>
           )}
-          {!revealed && (
+          {!revealed || event.year === null && (
             <div className="text-gray-400 italic">Year: ???</div>
           )}
         </div>
