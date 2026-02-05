@@ -88,7 +88,7 @@ export default function TimelineGame() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
             <Calendar className="w-8 h-8 text-indigo-600" />
-            <h1 className="text-4xl font-bold text-gray-800">Timeline Challenge</h1>
+            <h1 className="text-4xl font-bold text-gray-800">ChronoGuess</h1>
           </div>
 
           <div className="flex items-center gap-6">
