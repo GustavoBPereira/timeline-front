@@ -83,7 +83,7 @@ export default function TimelineGame() {
 
   return (
     <div className="min-h-screen p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto pb-64">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-8">
           <div className="flex items-center gap-2">
