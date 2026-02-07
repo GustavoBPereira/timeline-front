@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Heart, Trophy, Calendar } from 'lucide-react';
+
+import { useAutoScroll } from '../hooks/useAutoScroll';
+import { CustomDragLayer } from './CustomDragLayer';
 
 export const ItemTypes = {
   CARD: 'card',
@@ -14,21 +18,27 @@ import { createMatch, playCard } from '../services/game';
 
 interface DraggableCardProps {
   children: React.ReactNode;
+  event: Occurrence;
 }
 
-function DraggableCard({ children }: DraggableCardProps) {
-  const [{ isDragging }, drag] = useDrag(() => ({
+function DraggableCard({ children, event }: DraggableCardProps) {
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: ItemTypes.CARD,
+    item: { event },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
 
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
   return (
     <div
       ref={drag}
       style={{
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? 0 : 1, // Hide original item completely while dragging
         cursor: 'move',
       }}
     >
@@ -41,6 +51,9 @@ export default function TimelineGame() {
   const [match, setMatch] = useState<Match | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Enable auto-scrolling when dragging
+  useAutoScroll();
 
   // Initialize game
   useEffect(() => {
@@ -148,11 +161,13 @@ export default function TimelineGame() {
         {/* Current Card */}
         {currentCard && (
           <div className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-20">
-            <DraggableCard>
+            <DraggableCard event={currentCard}>
               <EventCard event={currentCard} isCorrect={isCorrect} />
             </DraggableCard>
           </div>
         )}
+
+        <CustomDragLayer />
 
         {/* Timeline */}
         <Timeline
