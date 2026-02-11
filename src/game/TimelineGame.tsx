@@ -10,42 +10,13 @@ export const ItemTypes = {
   CARD: 'card',
 };
 import { EventCard } from './EventCard';
+import { DraggableCard } from './DraggableCard';
 import { Timeline } from './Timeline';
 import { GameOver } from './GameOver';
 import { Victory } from './Victory';
 import { Match, Occurrence } from '../types/game';
 import { createMatch, playCard } from '../services/game';
 
-interface DraggableCardProps {
-  children: React.ReactNode;
-  event: Occurrence;
-}
-
-function DraggableCard({ children, event }: DraggableCardProps) {
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
-    type: ItemTypes.CARD,
-    item: { event },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
-
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, [preview]);
-
-  return (
-    <div
-      ref={drag}
-      style={{
-        opacity: isDragging ? 0 : 1, // Hide original item completely while dragging
-        cursor: 'move',
-      }}
-    >
-      {children}
-    </div>
-  );
-}
 
 export default function TimelineGame() {
   const [match, setMatch] = useState<Match | null>(null);
