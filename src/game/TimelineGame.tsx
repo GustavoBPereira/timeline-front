@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { Heart, Trophy, Calendar, Globe } from 'lucide-react';
+import { Heart, Trophy, Calendar, Globe, HelpCircle, X } from 'lucide-react';
 
 import { useAutoScroll } from '../hooks/useAutoScroll';
 import { CustomDragLayer } from './CustomDragLayer';
@@ -23,6 +23,7 @@ export default function TimelineGame() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [lang, setLang] = useState<'en' | 'pt-br'>('en');
+  const [showInstructions, setShowInstructions] = useState<boolean>(false);
 
   // Enable auto-scrolling when dragging
   useAutoScroll();
@@ -122,6 +123,15 @@ export default function TimelineGame() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-6 mt-4 sm:mt-0">
+            {/* How to Play */}
+            <button
+              onClick={() => setShowInstructions(true)}
+              className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+            >
+              <HelpCircle className="w-5 h-5 text-indigo-500" />
+              <span className="font-semibold text-gray-700">How to Play</span>
+            </button>
+
             {/* Lives */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md">
               <Heart className="w-5 h-5 text-red-500" fill="currentColor" />
@@ -138,12 +148,7 @@ export default function TimelineGame() {
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-8">
-          <p className="text-gray-600 text-center">
-            Place the event card in the correct chronological position on the timeline!
-          </p>
-        </div>
+
 
         {/* Current Card */}
         {currentCard && (
@@ -162,6 +167,47 @@ export default function TimelineGame() {
           onPlacement={handlePlacement}
           disabled={isCorrect !== null || loading}
         />
+
+        {/* Instructions Modal */}
+        {showInstructions && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-200">
+              <button
+                onClick={() => setShowInstructions(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <HelpCircle className="w-8 h-8 text-indigo-600" />
+                <h2 className="text-2xl font-bold text-gray-800">How to Play</h2>
+              </div>
+
+              <div className="space-y-4 text-gray-600">
+                <p> Goal: finish the remaing deck</p>
+                <p>
+                  You will receive a new event card at the <strong>bottom of the screen</strong>.
+                  This is your current card.
+                </p>
+                <p>
+                  Place it in the correct chronological position on the timeline!
+                </p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Read the event on your current card</li>
+                  <li>Drag and drop or click in the possition on the timeline</li>
+                  <li>If correct, it stays! If wrong, you lose a life</li>
+                </ul>
+                <button
+                  onClick={() => setShowInstructions(false)}
+                  className="w-full mt-6 bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
