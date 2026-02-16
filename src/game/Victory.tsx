@@ -1,13 +1,16 @@
 import { motion } from 'motion/react';
 import { RotateCcw, Trophy, Sparkles } from 'lucide-react';
+import { messages } from '../i18n/messages';
 
 interface VictoryProps {
   onRestart: () => void;
   score: number;
   occurrences_played: number;
+  lang: string;
 }
 
-export function Victory({ onRestart, score, occurrences_played}: VictoryProps) {
+export function Victory({ onRestart, score, occurrences_played, lang }: VictoryProps) {
+  const t = messages[lang];
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
       <motion.div
@@ -21,13 +24,13 @@ export function Victory({ onRestart, score, occurrences_played}: VictoryProps) {
           {[...Array(10)].map((_, i) => (
             <motion.div
               key={i}
-              initial={{ 
-                opacity: 0, 
+              initial={{
+                opacity: 0,
                 scale: 0,
                 x: Math.random() * 400,
                 y: Math.random() * 600,
               }}
-              animate={{ 
+              animate={{
                 opacity: [0, 1, 0],
                 scale: [0, 1, 0],
               }}
@@ -53,14 +56,14 @@ export function Victory({ onRestart, score, occurrences_played}: VictoryProps) {
         </motion.div>
 
         <h2 className="text-4xl font-bold text-gray-800 mb-4 relative z-10">
-          Congratulations!
+          {t.congratulations_title}
         </h2>
         <p className="text-gray-600 mb-6 relative z-10">
-          You've successfully placed all events in chronological order!
+          {t.congratulations_message}
         </p>
 
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-6 mb-8 relative z-10">
-          {score === occurrences_played ? "Perfect Score" : "Your Score"}
+          {score === occurrences_played ? t.perfect_score : t.your_score}
           <p className="text-5xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
             {score}/{occurrences_played}
           </p>
@@ -73,7 +76,7 @@ export function Victory({ onRestart, score, occurrences_played}: VictoryProps) {
           className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-semibold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 relative z-10"
         >
           <RotateCcw className="w-5 h-5" />
-          Play Again
+          {t.play_again}
         </motion.button>
       </motion.div>
     </div>

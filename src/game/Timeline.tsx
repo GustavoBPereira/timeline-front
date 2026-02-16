@@ -3,14 +3,17 @@ import { useDrop } from 'react-dnd';
 import { Occurrence } from '../types/game';
 import { CalendarDays } from 'lucide-react';
 import { ItemTypes } from './TimelineGame';
+import { messages } from '../i18n/messages';
 
 interface TimelineProps {
   events: Occurrence[];
   onPlacement: (position: number) => void;
   disabled: boolean;
+  lang: string;
 }
 
-export function Timeline({ events, onPlacement, disabled }: TimelineProps) {
+export function Timeline({ events, onPlacement, disabled, lang }: TimelineProps) {
+  const t = messages[lang];
   return (
     <div className="relative">
       <div className="flex flex-col gap-4">
@@ -23,7 +26,7 @@ export function Timeline({ events, onPlacement, disabled }: TimelineProps) {
                 position={0}
                 onPlace={onPlacement}
                 disabled={disabled}
-                label="Place here (earliest)"
+                label={t.place_here_earliest}
               />
             )}
 
@@ -53,7 +56,7 @@ export function Timeline({ events, onPlacement, disabled }: TimelineProps) {
               position={index + 1}
               onPlace={onPlacement}
               disabled={disabled}
-              label={index === events.length - 1 ? "Place here (latest)" : "Place here"}
+              label={index === events.length - 1 ? t.place_here_latest : t.place_here}
             />
           </div>
         ))}

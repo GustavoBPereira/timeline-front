@@ -16,6 +16,7 @@ import { GameOver } from './GameOver';
 import { Victory } from './Victory';
 import { Match, Occurrence } from '../types/game';
 import { createMatch, playCard } from '../services/game';
+import { messages } from '../i18n/messages';
 
 
 export default function TimelineGame() {
@@ -32,6 +33,8 @@ export default function TimelineGame() {
   useEffect(() => {
     startNewGame();
   }, [lang]);
+
+  const t = messages[lang];
 
   const startNewGame = async () => {
     setLoading(true);
@@ -74,7 +77,7 @@ export default function TimelineGame() {
   if (!match && loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <p className="text-2xl font-semibold text-gray-700">Loading game...</p>
+        <p className="text-2xl font-semibold text-gray-700">{t.loadingGame}</p>
       </div>
     );
   }
@@ -82,7 +85,7 @@ export default function TimelineGame() {
   if (!match) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <p className="text-2xl font-semibold text-red-500">Error: Game not loaded.</p>
+        <p className="text-2xl font-semibold text-red-500">{t.errorGameNotLoaded}</p>
       </div>
     );
   }
@@ -90,11 +93,11 @@ export default function TimelineGame() {
   const currentCard = match.player_hand.length > 0 ? match.player_hand[0] : null;
 
   if (match.status === 'win') {
-    return <Victory onRestart={startNewGame} score={match.timeline.length} occurrences_played={match.timeline.length + match.mistakes.length} />;
+    return <Victory onRestart={startNewGame} score={match.timeline.length} occurrences_played={match.timeline.length + match.mistakes.length} lang={lang} />;
   }
 
   if (match.status === 'lose') {
-    return <GameOver onRestart={startNewGame} score={match.timeline.length} />;
+    return <GameOver onRestart={startNewGame} score={match.timeline.length} lang={lang} />;
   }
 
   return (
@@ -104,7 +107,7 @@ export default function TimelineGame() {
         <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-8">
           <div className="flex items-center gap-2">
             <Calendar className="w-8 h-8 text-indigo-600" />
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 sm:mt-0">ChronoGuess</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 sm:mt-0">{t.chronoGuess}</h1>
           </div>
 
           <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md mx-4">
@@ -117,8 +120,8 @@ export default function TimelineGame() {
               }}
               className="bg-transparent font-semibold text-gray-700 outline-none cursor-pointer"
             >
-              <option value="en">English</option>
-              <option value="pt-br">Português</option>
+              <option value="en">{t.english}</option>
+              <option value="pt-br">{t.portuguese}</option>
             </select>
           </div>
 
@@ -129,20 +132,22 @@ export default function TimelineGame() {
               className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
             >
               <HelpCircle className="w-5 h-5 text-indigo-500" />
-              <span className="font-semibold text-gray-700">How to Play</span>
+              <span className="font-semibold text-gray-700">{t.howToPlay}</span>
             </button>
 
             {/* Lives */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md">
               <Heart className="w-5 h-5 text-red-500" fill="currentColor" />
-              <span className="font-semibold text-gray-700">Lives: {match.remaining_life}</span>
+              <span className="font-semibold text-gray-700">
+                {t.lives} {match.remaining_life}
+              </span>
             </div>
 
             {/* Remaining Cards */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md">
               <Trophy className="w-5 h-5 text-yellow-500" />
               <span className="font-semibold text-gray-700">
-                Remaining: {match.remaining_deck}
+                {t.remaining} {match.remaining_deck}
               </span>
             </div>
           </div>
@@ -154,18 +159,19 @@ export default function TimelineGame() {
         {currentCard && (
           <div className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-20">
             <DraggableCard event={currentCard}>
-              <EventCard event={currentCard} isCorrect={isCorrect} />
+              <EventCard event={currentCard} isCorrect={isCorrect} lang={lang} />
             </DraggableCard>
           </div>
         )}
 
-        <CustomDragLayer />
+        <CustomDragLayer lang={lang} />
 
         {/* Timeline */}
         <Timeline
           events={match.timeline}
           onPlacement={handlePlacement}
           disabled={isCorrect !== null || loading}
+          lang={lang}
         />
 
         {/* Instructions Modal */}
@@ -181,28 +187,29 @@ export default function TimelineGame() {
 
               <div className="flex items-center gap-3 mb-4">
                 <HelpCircle className="w-8 h-8 text-indigo-600" />
-                <h2 className="text-2xl font-bold text-gray-800">How to Play</h2>
+                <h2 className="text-2xl font-bold text-gray-800">{t.howToPlay}</h2>
               </div>
 
               <div className="space-y-4 text-gray-600">
-                <p> Goal: finish the remaing deck</p>
+                <p>{t.goal}</p>
                 <p>
-                  You will receive a new event card at the <strong>bottom of the screen</strong>.
-                  This is your current card.
+                  {t.instruction1_1}
+                  <strong>{t.instruction1_2}</strong>
+                  {t.instruction1_3}
                 </p>
                 <p>
-                  Place it in the correct chronological position on the timeline!
+                  {t.instruction2}
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Read the event on your current card</li>
-                  <li>Drag and drop or click in the possition on the timeline</li>
-                  <li>If correct, it stays! If wrong, you lose a life</li>
+                  <li>{t.instruction3_1}</li>
+                  <li>{t.instruction3_2}</li>
+                  <li>{t.instruction3_3}</li>
                 </ul>
                 <button
                   onClick={() => setShowInstructions(false)}
                   className="w-full mt-6 bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
                 >
-                  Got it!
+                  {t.gotIt}
                 </button>
               </div>
             </div>

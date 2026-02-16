@@ -29,7 +29,7 @@ function getItemStyles(initialOffset: { x: number; y: number } | null, currentOf
     };
 }
 
-export function CustomDragLayer() {
+export function CustomDragLayer({ lang }: { lang: string }) {
     const { isDragging, item, initialOffset, currentOffset, itemType } = useDragLayer((monitor) => ({
         item: monitor.getItem(),
         itemType: monitor.getItemType(),
@@ -47,7 +47,7 @@ export function CustomDragLayer() {
             <div style={getItemStyles(initialOffset, currentOffset)}>
                 {itemType === ItemTypes.CARD && (
                     <div style={{ width: '300px' }}>
-                        <EventCard event={item.event} isCorrect={null} />
+                        <EventCard event={item.event} isCorrect={null} lang={lang} />
                     </div>
                 )}
             </div>

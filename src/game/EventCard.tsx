@@ -1,14 +1,17 @@
 import { motion } from 'motion/react';
 import { Occurrence } from '../types/game';
 import { Check, X } from 'lucide-react';
+import { messages } from '../i18n/messages';
 
 interface EventCardProps {
   event: Occurrence;
   isCorrect: boolean | null;
   revealed?: boolean;
+  lang: string;
 }
 
-export function EventCard({ event, isCorrect, revealed = false }: EventCardProps) {
+export function EventCard({ event, isCorrect, revealed = false, lang }: EventCardProps) {
+  const t = messages[lang];
   return (
     <motion.div
       initial={{ scale: 0.8, opacity: 0 }}
@@ -51,7 +54,7 @@ export function EventCard({ event, isCorrect, revealed = false }: EventCardProps
         <div className="text-center">
           <div className="mb-2">
             <span className="inline-block px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-600 uppercase bg-indigo-50 border border-indigo-100 rounded">
-              Your Card
+              {t.your_card}
             </span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">{event.title}</h3>

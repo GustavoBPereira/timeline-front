@@ -1,12 +1,15 @@
 import { motion } from 'motion/react';
 import { RotateCcw, XCircle } from 'lucide-react';
+import { messages } from '../i18n/messages';
 
 interface GameOverProps {
   onRestart: () => void;
   score: number;
+  lang: string;
 }
 
-export function GameOver({ onRestart, score }: GameOverProps) {
+export function GameOver({ onRestart, score, lang }: GameOverProps) {
+  const t = messages[lang];
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
       <motion.div
@@ -24,13 +27,13 @@ export function GameOver({ onRestart, score }: GameOverProps) {
           <XCircle className="w-24 h-24 text-red-500 mx-auto" />
         </motion.div>
 
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">Game Over!</h2>
+        <h2 className="text-4xl font-bold text-gray-800 mb-4">{t.lose_title}</h2>
         <p className="text-gray-600 mb-6">
-          You've run out of lives, but you did great!
+          {t.lose_message}
         </p>
 
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-6 mb-8">
-          <p className="text-gray-600 mb-2">Events Placed</p>
+          <p className="text-gray-600 mb-2">{t.events_placed}</p>
           <p className="text-5xl font-bold text-indigo-600">{score}</p>
         </div>
 
@@ -41,7 +44,7 @@ export function GameOver({ onRestart, score }: GameOverProps) {
           className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
         >
           <RotateCcw className="w-5 h-5" />
-          Try Again
+          {t.try_again}
         </motion.button>
       </motion.div>
     </div>
