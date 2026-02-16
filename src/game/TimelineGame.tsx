@@ -104,7 +104,7 @@ export default function TimelineGame() {
     <div className="min-h-screen p-4 sm:p-8">
       <div className="max-w-6xl mx-auto pb-64">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between mb-8">
           <div className="flex items-center gap-2">
             <Calendar className="w-8 h-8 text-indigo-600" />
             <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 sm:mt-0">{t.chronoGuess}</h1>
@@ -125,15 +125,7 @@ export default function TimelineGame() {
             </select>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-6 mt-4 sm:mt-0">
-            {/* How to Play */}
-            <button
-              onClick={() => setShowInstructions(true)}
-              className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
-            >
-              <HelpCircle className="w-5 h-5 text-indigo-500" />
-              <span className="font-semibold text-gray-700">{t.howToPlay}</span>
-            </button>
+          <div className="flex items-center flex-wrap gap-2 justify-center sm:gap-6 mt-4 sm:mt-0">
 
             {/* Lives */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md">
@@ -150,6 +142,16 @@ export default function TimelineGame() {
                 {t.remaining} {match.remaining_deck}
               </span>
             </div>
+
+            {/* How to Play */}
+            <button
+              onClick={() => setShowInstructions(true)}
+              className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+            >
+              <HelpCircle className="w-5 h-5 text-indigo-500" />
+              <span className="font-semibold text-gray-700">{t.howToPlay}</span>
+            </button>
+
           </div>
         </div>
 

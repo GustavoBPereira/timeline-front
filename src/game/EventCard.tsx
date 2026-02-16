@@ -57,10 +57,10 @@ export function EventCard({ event, isCorrect, revealed = false, lang }: EventCar
               {t.your_card}
             </span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">{event.title}</h3>
-          <p className="text-gray-600 mb-4">{event.summary}</p>
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2 text-wrap">{event.title}</h3>
+          <p className="text-sm sm:text-base text-gray-600 mb-4 text-wrap">{event.summary}</p>
           {revealed && event.year !== null && (
-            <div className="inline-block bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold">
+            <div className="inline-block bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold text-sm sm:text-base">
               {event.year}
             </div>
           )}

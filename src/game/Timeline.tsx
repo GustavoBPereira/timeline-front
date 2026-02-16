@@ -37,15 +37,15 @@ export function Timeline({ events, onPlacement, disabled, lang }: TimelineProps)
               transition={{ duration: 0.4, delay: index * 0.1 }}
               className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-lg p-4 text-white"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <CalendarDays className="w-5 h-5" />
+                  <CalendarDays className="w-5 h-5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold">{event.title}</h4>
-                    <p className="text-sm opacity-90">{event.summary}</p>
+                    <h4 className="font-semibold text-base sm:text-lg">{event.title}</h4>
+                    <p className="text-xs sm:text-sm opacity-90 text-wrap">{event.summary}</p>
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-bold text-lg">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-sm sm:text-lg flex-shrink-0">
                   {event.year}
                 </div>
               </div>

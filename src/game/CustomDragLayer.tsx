@@ -46,7 +46,7 @@ export function CustomDragLayer({ lang }: { lang: string }) {
         <div style={layerStyles}>
             <div style={getItemStyles(initialOffset, currentOffset)}>
                 {itemType === ItemTypes.CARD && (
-                    <div style={{ width: '300px' }}>
+                    <div className="w-full max-w-xs px-4">
                         <EventCard event={item.event} isCorrect={null} lang={lang} />
                     </div>
                 )}
