@@ -49,6 +49,11 @@ export function EventCard({ event, isCorrect, revealed = false }: EventCardProps
         )}
 
         <div className="text-center">
+          <div className="mb-2">
+            <span className="inline-block px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-600 uppercase bg-indigo-50 border border-indigo-100 rounded">
+              Your Card
+            </span>
+          </div>
           <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">{event.title}</h3>
           <p className="text-gray-600 mb-4">{event.summary}</p>
           {revealed && event.year !== null && (
