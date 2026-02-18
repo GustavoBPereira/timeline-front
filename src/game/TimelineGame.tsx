@@ -106,7 +106,7 @@ export default function TimelineGame() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between mb-8">
           <div className="flex items-center gap-2">
-            <Calendar className="w-8 h-8 text-indigo-600" />
+            <img src="/assets/icon-no-background-CFrjZKtB.png" alt="ChronoGuess" className="w-16 h-16" />
             <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 sm:mt-0">{t.chronoGuess}</h1>
           </div>
 
